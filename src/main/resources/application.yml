@@ -1,0 +1,16 @@
+spring:
+  application:
+    name: embabel-java-agent-tutorial
+
+embabel:
+  models:
+    default-llm: deepseek-chat
+  agent:
+    platform:
+      models:
+        deepseek:
+          api-key: ${DEEPSEEK_API_KEY}
+
+openweather:
+  api:
+    key: ${OPENWEATHER_API_KEY}
