@@ -1,26 +1,20 @@
-/*
- * Copyright 2024-2025 Embabel Software, Inc.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package com.example.embabel;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+/**
+ * 智能保险平台启动入口。
+ *
+ * <p>关闭 embabel 框架的交互式 Shell 模式，以 Servlet 容器方式运行，
+ * 通过 REST API 对外提供核保、理赔、AI 客服等服务。
+ */
 @SpringBootApplication
-class EmbabelApplication {
+public class EmbabelApplication {
+
     public static void main(String[] args) {
+        System.setProperty("embabel.agent.shell.interactive.enabled", "false");
+        System.setProperty("embabel.agent.shell.web-application-type", "servlet");
         SpringApplication.run(EmbabelApplication.class, args);
     }
 }
