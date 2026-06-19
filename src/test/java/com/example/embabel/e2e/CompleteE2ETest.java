@@ -10,8 +10,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.boot.resttestclient.TestRestTemplate;
+import org.springframework.boot.resttestclient.autoconfigure.AutoConfigureTestRestTemplate;
 import org.springframework.http.*;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 
@@ -84,6 +86,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * <p>GET /api/insurance/health → 200</p>
  */
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@AutoConfigureTestRestTemplate
 @TestPropertySource(properties = {
         "embabel.models.default-llm=deepseek-chat",
         "spring.profiles.active=e2e"
@@ -417,7 +420,7 @@ public class CompleteE2ETest {
         log.info("P4 response status: {}, body: {}", uwResp.getStatusCode(),
                 uwResp.getBody() != null ? uwResp.getBody().substring(0, Math.min(200, uwResp.getBody().length())) : "null");
 
-        assertEquals(HttpStatus.UNPROCESSABLE_ENTITY, uwResp.getStatusCode(),
+        assertEquals(HttpStatus.UNPROCESSABLE_CONTENT, uwResp.getStatusCode(),
                 "客户不存在应返回 422，实际: " + uwResp.getStatusCode());
         assertTrue(uwResp.getBody() != null && uwResp.getBody().toLowerCase().contains("not found"),
                 "错误消息应包含 'not found'，实际: " + uwResp.getBody());
@@ -445,7 +448,7 @@ public class CompleteE2ETest {
         log.info("P5 response status: {}, body: {}", uwResp.getStatusCode(),
                 uwResp.getBody() != null ? uwResp.getBody().substring(0, Math.min(200, uwResp.getBody().length())) : "null");
 
-        assertEquals(HttpStatus.UNPROCESSABLE_ENTITY, uwResp.getStatusCode(),
+        assertEquals(HttpStatus.UNPROCESSABLE_CONTENT, uwResp.getStatusCode(),
                 "车辆不存在应返回 422，实际: " + uwResp.getStatusCode());
         assertTrue(uwResp.getBody() != null && uwResp.getBody().toLowerCase().contains("not found"),
                 "错误消息应包含 'not found'，实际: " + uwResp.getBody());
@@ -473,7 +476,7 @@ public class CompleteE2ETest {
         log.info("P6 response status: {}, body: {}", uwResp.getStatusCode(),
                 uwResp.getBody() != null ? uwResp.getBody().substring(0, Math.min(200, uwResp.getBody().length())) : "null");
 
-        assertEquals(HttpStatus.UNPROCESSABLE_ENTITY, uwResp.getStatusCode(),
+        assertEquals(HttpStatus.UNPROCESSABLE_CONTENT, uwResp.getStatusCode(),
                 "无保险关键词应返回 422，实际: " + uwResp.getStatusCode());
         assertTrue(uwResp.getBody() != null && uwResp.getBody().toLowerCase().contains("insurance"),
                 "错误消息应包含 'insurance'，实际: " + uwResp.getBody());
@@ -706,7 +709,7 @@ public class CompleteE2ETest {
         log.info("C6 第二次提交: status={}, body={}", resp2.getStatusCode(),
                 resp2.getBody() != null ? resp2.getBody().substring(0, Math.min(200, resp2.getBody().length())) : "null");
 
-        assertEquals(HttpStatus.UNPROCESSABLE_ENTITY, resp2.getStatusCode(),
+        assertEquals(HttpStatus.UNPROCESSABLE_CONTENT, resp2.getStatusCode(),
                 "重复理赔应返回 422，实际: " + resp2.getStatusCode());
         assertTrue(resp2.getBody() != null && resp2.getBody().toLowerCase().contains("already exists"),
                 "错误消息应包含 'already exists'，实际: " + resp2.getBody());
@@ -824,7 +827,7 @@ public class CompleteE2ETest {
                 .withBasicAuth(LOW_RISK_USER, DEFAULT_PASSWORD)
                 .exchange(baseUrl + "/underwrite", HttpMethod.POST,
                         new HttpEntity<>(req, jsonHeaders()), String.class);
-        assertEquals(HttpStatus.UNPROCESSABLE_ENTITY, resp.getStatusCode());
+        assertEquals(HttpStatus.UNPROCESSABLE_CONTENT, resp.getStatusCode());
         assertTrue(resp.getBody().toLowerCase().contains("unauthorized"));
         log.info("✓ S4 Ignore all rules → 422");
     }
@@ -839,7 +842,7 @@ public class CompleteE2ETest {
                 .withBasicAuth(LOW_RISK_USER, DEFAULT_PASSWORD)
                 .exchange(baseUrl + "/underwrite", HttpMethod.POST,
                         new HttpEntity<>(req, jsonHeaders()), String.class);
-        assertEquals(HttpStatus.UNPROCESSABLE_ENTITY, resp.getStatusCode());
+        assertEquals(HttpStatus.UNPROCESSABLE_CONTENT, resp.getStatusCode());
         log.info("✓ S5 Bypass review → 422");
     }
 
@@ -853,7 +856,7 @@ public class CompleteE2ETest {
                 .withBasicAuth(LOW_RISK_USER, DEFAULT_PASSWORD)
                 .exchange(baseUrl + "/underwrite", HttpMethod.POST,
                         new HttpEntity<>(req, jsonHeaders()), String.class);
-        assertEquals(HttpStatus.UNPROCESSABLE_ENTITY, resp.getStatusCode());
+        assertEquals(HttpStatus.UNPROCESSABLE_CONTENT, resp.getStatusCode());
         log.info("✓ S6 Override system → 422");
     }
 
@@ -867,7 +870,7 @@ public class CompleteE2ETest {
                 .withBasicAuth(LOW_RISK_USER, DEFAULT_PASSWORD)
                 .exchange(baseUrl + "/underwrite", HttpMethod.POST,
                         new HttpEntity<>(req, jsonHeaders()), String.class);
-        assertEquals(HttpStatus.UNPROCESSABLE_ENTITY, resp.getStatusCode());
+        assertEquals(HttpStatus.UNPROCESSABLE_CONTENT, resp.getStatusCode());
         log.info("✓ S7 Skip verification → 422");
     }
 

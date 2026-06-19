@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.4.0</version>
+        <version>4.0.1</version>
         <relativePath/>
     </parent>
     <groupId>com.example</groupId>
@@ -20,8 +20,7 @@
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <embabel-agent.version>0.3.5</embabel-agent.version>
-        <spring-boot.version>3.4.0</spring-boot.version>
+        <embabel-agent.version>2.0.0-SNAPSHOT</embabel-agent.version>
         <embabel.models.default-llm>deepseek-chat</embabel.models.default-llm>
     </properties>
 
@@ -104,6 +103,13 @@
             <artifactId>spring-boot-starter-webflux</artifactId>
         </dependency>
 
+        <!-- Spring Retry（Spring Boot 4.x / AI 2.0 移除了传递依赖，embabel 仍需要） -->
+        <dependency>
+            <groupId>org.springframework.retry</groupId>
+            <artifactId>spring-retry</artifactId>
+            <version>2.0.13</version>
+        </dependency>
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
@@ -138,13 +144,55 @@
             <artifactId>h2</artifactId>
         </dependency>
 
-        <!-- SpringDoc OpenAPI for Swagger UI -->
+        <!-- SpringDoc OpenAPI for Swagger UI (3.0.x for Spring Boot 4.x) -->
         <dependency>
             <groupId>org.springdoc</groupId>
             <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
-            <version>2.7.0</version>
+            <version>3.0.3</version>
+        </dependency>
+
+        <!-- Spring AI 2.0 新增的 tool autoconfigure 模块，embabel 未传递引入 -->
+        <dependency>
+            <groupId>org.springframework.ai</groupId>
+            <artifactId>spring-ai-autoconfigure-model-tool</artifactId>
+            <version>2.0.0</version>
+        </dependency>
+
+        <!-- Spring Boot 4.x 将 TestRestTemplate 拆到独立模块，RestTemplateBuilder 也拆到 restclient -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-resttestclient</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-restclient</artifactId>
+            <scope>test</scope>
         </dependency>
     </dependencies>
+
+    <repositories>
+        <repository>
+            <id>embabel-releases</id>
+            <url>https://repo.embabel.com/artifactory/libs-release</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>embabel-snapshots</id>
+            <url>https://repo.embabel.com/artifactory/libs-snapshot</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
 
     <build>
         <plugins>
