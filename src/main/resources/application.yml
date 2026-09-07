@@ -31,7 +31,7 @@ embabel:
     platform:
       models:
         deepseek:
-          api-key: ${DEEPSEEK_API_KEY}
+          api-key: sk-0e654c6b6543484fa37b85af9d62a321
     agent-platform:
       scanning:
         annotation: true
