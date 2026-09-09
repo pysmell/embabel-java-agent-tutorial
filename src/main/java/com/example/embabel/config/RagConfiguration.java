@@ -24,20 +24,39 @@ public class RagConfiguration {
 
     private static final Logger logger = LoggerFactory.getLogger(RagConfiguration.class);
 
+    /**
+     * 索引名称
+     */
     @Value("${insurance.rag.lucene.name:insurance-lucene}")
     private String luceneName;
 
+    /**
+     * 每个文档片段最多 1000 字符
+     */
     @Value("${insurance.rag.lucene.chunk-size:1000}")
     private int chunkSize;
 
+    /**
+     * 相邻片段重叠 200 字符，避免语义在边界断裂
+     * <p>
+     *     下一片从上一片结尾往前 200 字符处开始
+     * </p>
+     */
     @Value("${insurance.rag.lucene.chunk-overlap:200}")
     private int chunkOverlap;
 
+    /**
+     * 搜索引擎
+     *
+     * @return 搜索引擎对象
+     */
     @Bean
     public LuceneSearchOperations luceneSearchOperations() {
         logger.info("Creating LuceneSearchOperations (text-only, no embedding): name={}, chunkSize={}, chunkOverlap={}",
                 luceneName, chunkSize, chunkOverlap);
 
+        // 只有在 embeddingService != null（启用向量搜索），文档切片后产生 N 个 Chunk ->  不是一个个单独发给 Embedding API
+        // -> 每 100 个 Chunk 打包成一批，批量请求 -> 减少 HTTP 调用次数，提升摄入速度
         var chunkerConfig = new ContentChunker.Config(chunkSize, chunkOverlap, 100);
 
         var ops = new LuceneSearchOperations(

@@ -31,11 +31,15 @@ embabel:
     platform:
       models:
         deepseek:
-          api-key: sk-0e654c6b6543484fa37b85af9d62a321
+          api-key: ${DEEPSEEK_API_KEY}
     agent-platform:
       scanning:
         annotation: true
         bean: true
+
+    guardrails:
+      user-input: com.example.embabel.guardrail.InsuranceUserInputGuardRailImpl
+      assistant-message: com.example.embabel.guardrail.InsuranceAssistantMessageGuardRailImpl
   # ============================================================
   # 可观测性配置（默认关闭，按需开启）
   # 开启方式：将 enabled 改为 true，取消 management 段注释

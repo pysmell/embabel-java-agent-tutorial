@@ -109,14 +109,15 @@ public class ChatService {
             UserInput input = new UserInput(enrichedMessage);
 
             var processOptions = new ProcessOptions()
-                    .withVerbosity(new Verbosity()
-                            .withShowPrompts(false)
-                            .withShowLlmResponses(false)
-                            .withDebug(false));
+                    .withVerbosity(new Verbosity()//Verbosity 是其中专门管"运行时打不打日志、打多详细"的子配置
+                            .withShowPrompts(false) // 不打印发给 LLM 的完整 Prompt
+                            .withShowLlmResponses(false) // 不打印 LLM 返回的原始响应
+                            .withDebug(false)); // 不开启 Agent 框架的 debug 日志
 
-            var invocation = AgentInvocation.builder(agentPlatform)
-                    .options(processOptions)
-                    .build(ChatbotAgent.ChatOutput.class);
+            // Embabel 框架提供的Agent 调用器
+            var invocation = AgentInvocation.builder(agentPlatform)//指定在哪个平台上运行，绑定运行平台。AgentPlatform 是框架的核心容器，管理所有已注册的 Agent（包括 ChatbotAgent）。调用器需要知道去哪里找 Agent。
+                    .options(processOptions) //传入配置的运行选项（静默模式）
+                    .build(ChatbotAgent.ChatOutput.class);//声明期望的返回类型
 
             // 带超时保护地调用 Agent（超时则触发 StuckHandler）
             ChatbotAgent.ChatOutput output;

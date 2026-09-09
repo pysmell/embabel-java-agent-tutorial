@@ -78,6 +78,7 @@ public class ClaimsAgent implements StuckHandler {
     // ──────────────────────────────────────────────
 
     @Action(description = "校验保单是否存在且有效（状态为 ACTIVE 且在有效期内）")
+    @Cost
     public Policy verifyPolicy(UserInput userInput, OperationContext context) {
         String content = userInput.getContent();
         String policyNumber = extractParam(content, "policy", context);
